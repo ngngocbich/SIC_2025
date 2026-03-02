@@ -37,50 +37,33 @@ The project demonstrates distributed system deployment, batch ETL pipeline desig
 ```mermaid
 flowchart TB
 
-    %% External Data Source
-    Parquet["Parquet Files (External Source)"]
+    Source["Parquet Files (External)"]
 
-    %% Docker Network
-    subgraph Docker_Network["Docker Network (Hadoop Cluster)"]
+    subgraph Cluster["Dockerized Hadoop Cluster"]
 
         subgraph Master["MASTER NODE"]
-            NameNode["NameNode"]
+            NameNode["NameNode (HDFS Metadata)"]
             ResourceManager["ResourceManager"]
             Hive["Hive"]
             SparkDriver["Spark Driver"]
         end
 
-        subgraph Slave1["SLAVE01"]
-            DataNode1["DataNode"]
-            NodeManager1["NodeManager"]
+        subgraph Slaves["SLAVE NODES (2x)"]
+            DataNode["DataNode (HDFS Storage)"]
+            NodeManager["NodeManager (Task Execution)"]
         end
-
-        subgraph Slave2["SLAVE02"]
-            DataNode2["DataNode"]
-            NodeManager2["NodeManager"]
-        end
-
-        %% Distributed Storage
-        HDFS["Distributed HDFS Storage"]
-
-        %% Processing Layer
-        Spark["PySpark ETL (Batch Processing)"]
 
     end
 
+    Analytics["Analytics & Modeling"]
+
     %% Data Flow
-    Parquet --> HDFS
-    HDFS --> Spark
-    Spark --> Hive
-    Hive --> Analytics["Analytics & Modeling"]
-
-    %% Cluster Connections
-    NameNode --- DataNode1
-    NameNode --- DataNode2
-    ResourceManager --- NodeManager1
-    ResourceManager --- NodeManager2
+    Source --> NameNode
+    NameNode --> DataNode
+    DataNode --> SparkDriver
+    SparkDriver --> Hive
+    Hive --> Analytics
 ```
-
 # 🛠 Technology Stack
 
 * Docker
@@ -269,22 +252,3 @@ Model serves as proof-of-concept demand forecasting.
 6. Train baseline demand model
 
 ---
-
-# 🎯 What This Project Demonstrates
-
-✔ Distributed infrastructure deployment
-✔ Hadoop ecosystem understanding
-✔ HDFS data management
-✔ Batch ETL pipeline design
-✔ Spark distributed processing
-✔ Hive-based analytics
-✔ Integration of ML with Big Data pipeline
-
----
-
-# 🚀 Future Improvements
-
-* Convert batch pipeline to streaming (Spark Structured Streaming)
-* Add workflow orchestration (Apache Airflow)
-* Deploy on cloud environment (AWS EMR / GCP Dataproc)
-* Implement CI/CD for data pipeline
