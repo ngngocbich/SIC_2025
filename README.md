@@ -37,33 +37,49 @@ The project demonstrates distributed system deployment, batch ETL pipeline desig
 ```mermaid
 flowchart TB
 
-    subgraph Docker_Network
-        MASTER["MASTER NODE
-        - NameNode
-        - ResourceManager
-        - Hive
-        - Spark Driver"]
+    %% External Data Source
+    Parquet["Parquet Files (External Source)"]
 
-        SLAVE1["SLAVE01
-        - DataNode
-        - NodeManager"]
+    %% Docker Network
+    subgraph Docker_Network["Docker Network (Hadoop Cluster)"]
 
-        SLAVE2["SLAVE02
-        - DataNode
-        - NodeManager"]
+        subgraph Master["MASTER NODE"]
+            NameNode["NameNode"]
+            ResourceManager["ResourceManager"]
+            Hive["Hive"]
+            SparkDriver["Spark Driver"]
+        end
 
-        MASTER --- SLAVE1
-        MASTER --- SLAVE2
+        subgraph Slave1["SLAVE01"]
+            DataNode1["DataNode"]
+            NodeManager1["NodeManager"]
+        end
+
+        subgraph Slave2["SLAVE02"]
+            DataNode2["DataNode"]
+            NodeManager2["NodeManager"]
+        end
+
+        %% Distributed Storage
+        HDFS["Distributed HDFS Storage"]
+
+        %% Processing Layer
+        Spark["PySpark ETL (Batch Processing)"]
+
     end
 
-    %%Data Flow:
-    Parquet["Parquet Files"] --> HDFS["HDFS (Master)"]
-    HDFS --> Spark["PySpark ETL"]
-    Spark --> Hive["Hive Tables"]
+    %% Data Flow
+    Parquet --> HDFS
+    HDFS --> Spark
+    Spark --> Hive
     Hive --> Analytics["Analytics & Modeling"]
-```
 
----
+    %% Cluster Connections
+    NameNode --- DataNode1
+    NameNode --- DataNode2
+    ResourceManager --- NodeManager1
+    ResourceManager --- NodeManager2
+```
 
 # 🛠 Technology Stack
 
