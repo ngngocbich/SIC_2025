@@ -1,7 +1,7 @@
 # 🚕 SIC_2025 – NYC Taxi Trip Data Analysis
 
 **Capstone Project - Samsung Innovation Campus (Big Data Course)**  
-**Team 1: Đào Tất Thành, Đoàn Ngọc Minh, Trần Đặng Thu Hằng, Phạm Lan Hương, Nguyễn Ngọc Bích**  
+**Team 1: 4 người**  
 **Date:** August 2025  
 
 ---
