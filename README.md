@@ -154,15 +154,6 @@ df = spark.read.parquet("hdfs:///data/parquet/")
 * Filter abnormal trip_distance
 * Handle missing values
 
-```python
-from pyspark.sql.functions import col
-
-clean_df = df.filter(
-    (col("passenger_count") > 0) &
-    (col("trip_distance") > 0)
-)
-```
-
 ---
 
 ## Step 3 – Feature Engineering
@@ -218,27 +209,6 @@ These insights support taxi fleet optimization strategies.
 
 # 🤖 Demand Modeling
 
-Objective: Predict taxi demand using time-based features.
-
-Model used:
-
-* Linear Regression (Spark MLlib)
-
-```python
-from pyspark.ml.regression import LinearRegression
-
-lr = LinearRegression(featuresCol="features", labelCol="trip_count")
-model = lr.fit(training_data)
-
-predictions = model.transform(test_data)
-```
-
-Evaluation metrics:
-
-* RMSE
-* R²
-
-Model serves as proof-of-concept demand forecasting.
 
 ---
 
