@@ -1,130 +1,287 @@
-# 🚕 SIC_2025 – NYC Taxi Trip Data Analysis
+# 🚕 NYC Taxi Big Data Platform
 
-**Capstone Project - Samsung Innovation Campus (Big Data Course)**  
-**Team 1: 4 người**  
-**Date:** August 2025  
+### Dockerized Hadoop + Spark ETL & Demand Prediction
 
 ---
 
-## 📘 Project Overview
+## 📌 Project Overview
 
-This project analyzes and predicts taxi demand across New York City using the **TLC Trip Record Data (2024)**.  
-By leveraging **Big Data** and **Machine Learning**, the project aims to optimize vehicle allocation across regions and time periods, helping improve transportation efficiency and passenger experience.
+This is a **team project (4 members)** focused on building an end-to-end Big Data platform to process and analyze NYC Taxi trip data.
 
----
+The system simulates a real-world Data Engineering workflow:
 
-## 🎯 Objectives
+> Infrastructure Setup → Data Ingestion → ETL Processing → Analytics → Modeling
 
-- Analyze mobility demand patterns across time and location.
-- Identify high-demand areas and peak hours for different taxi types.
-- Build **predictive models** to forecast taxi demand levels.
-- Visualize data to support operational decision-making.
-- Provide recommendations for efficient taxi allocation.
+The project demonstrates distributed system deployment, batch ETL pipeline design, and analytical modeling using the Hadoop ecosystem.
 
 ---
 
-## 🗂️ Datasets
+## 👥 Team Information
 
-Source: [NYC TLC Trip Record Data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
+**Team Size:** 4 members
+**My Role:** Data Processing & ETL Engineer
 
-| Dataset | Description | Key Fields |
-|----------|--------------|-------------|
-| **Yellow Taxi Data** | Traditional taxis serving all 5 boroughs. | pickup/dropoff time, distance, PULocationID, DOLocationID |
-| **Green Taxi Data** | Green taxis serving outer boroughs (Bronx, Brooklyn, Queens). | Similar fields as Yellow Taxi |
-| **High Volume FHVHV** | Ride-hailing services (Uber, Lyft, Via, etc.). | trip_miles, trip_time, company license, pickup/dropoff IDs |
+**Main Contributions:**
 
----
-
-## ⚙️ Data Pipeline
-
-### 1. **Ingestion**
-- Load `.parquet` data into **HDFS** using `hdfs dfs -put`.
-- Managed and analyzed in **PySpark** environment.
-
-### 2. **Transformation**
-- Data cleaning:
-  - Remove null/invalid entries.
-  - Filter out unrealistic speeds and trip lengths.
-- Feature engineering:
-  - Extract `hour`, `weekday`, `month`, and holiday tags.
-  - Create lag features (`lag_24hr`, `lag_168hr`).
-
-### 3. **Storage**
-- Store cleaned datasets in **Parquet** format for efficient querying.
+* Set up Docker-based multi-node Hadoop cluster
+* Configured HDFS, YARN, Hive environment
+* Built PySpark ETL pipeline
+* Performed data cleaning & feature engineering
+* Integrated Hive for analytical queries
+* Supported demand modeling phase
 
 ---
 
-## 📊 Exploratory Data Analysis (EDA)
+# 🏗 System Architecture
 
-- **Average daily trips by borough**  
-  - Manhattan and areas near **JFK** show the highest taxi density.  
-  - Staten Island and eastern Bronx remain low-demand zones.
+```
+                    Docker Network
+   -------------------------------------------------
+   |                                               |
+   |   ┌─────────────────────────────┐            |
+   |   │         MASTER              │            |
+   |   │-----------------------------│            |
+   |   │  NameNode                   │            |
+   |   │  ResourceManager            │            |
+   |   │  Hive                       │            |
+   |   │  Spark Driver               │            |
+   |   └──────────────┬──────────────┘            |
+   |                  │                           |
+   |   ┌──────────────┴──────────────┐            |
+   |   │          SLAVE01            │            |
+   |   │-----------------------------│            |
+   |   │  DataNode                   │            |
+   |   │  NodeManager                │            |
+   |   └──────────────┬──────────────┘            |
+   |                  │                           |
+   |   ┌──────────────┴──────────────┐            |
+   |   │          SLAVE02            │            |
+   |   │-----------------------------│            |
+   |   │  DataNode                   │            |
+   |   │  NodeManager                │            |
+   |   └─────────────────────────────┘            |
+   -------------------------------------------------
 
-- **Temporal patterns**
-  - Peak hours: 16h–20h  
-  - Busiest days: Friday and Saturday
-
-Visualizations include:
-- Heatmaps of trips by hour & weekday  
-- Distribution plots of daily trips per borough
-
----
-
-## 🤖 Machine Learning Models
-
-| Taxi Type | Model | Accuracy | Notes |
-|------------|--------|-----------|-------|
-| **Yellow Taxi** | Random Forest Classifier | 66.3% | Predicts demand levels (Very Low → Very High) |
-| **Green Taxi** | Clustering (K-Means) + Random Forest | F1 = 0.71 (best cluster) | Combines spatial clustering and classification |
-| **High Volume (FHVHV)** | Random Forest | 80.2% | Scalable model trained on 200M+ records |
-
-### Key Features:
-- Temporal: `hour`, `weekday`, `month`, `holiday_type`
-- Spatial: `PULocationID`
-- Historical: `lag_24hr`, `lag_168hr`
-
----
-
-## 💻 Tools & Technologies
-
-- **Languages:** Python (PySpark, Pandas, Scikit-learn, Matplotlib, Seaborn)
-- **Frameworks:** Hadoop HDFS, Apache Spark
-- **Visualization:** Matplotlib, Seaborn, GeoPandas
-- **Web Demo:** Flask + HTML/CSS for ML model interaction
+Data Flow:
+Parquet Files → HDFS → PySpark ETL → Hive Tables → Analytics → Modeling
+```
 
 ---
 
-## 🌐 Web Demo
+# 🛠 Technology Stack
 
-A simple interactive web demo was developed to:
-- Input pickup time and zone.
-- Predict taxi demand level.
-- Display recommendation for optimal vehicle allocation.
-
----
-
-## 📈 Results & Insights
-
-- Clear temporal and spatial demand patterns.
-- Machine Learning models can effectively predict demand peaks.
-- Proposed framework supports **dynamic taxi allocation** and **data-driven policy making**.
+* Docker
+* Hadoop HDFS
+* YARN
+* Apache Spark (PySpark)
+* Hive
+* Python
+* Jupyter Notebook
+* Parquet
 
 ---
 
-## 🚀 Future Improvements
+# 🚀 Infrastructure Setup
 
-- Incorporate **weather and event data** to enhance prediction accuracy.
-- Apply **deep learning** models for spatiotemporal prediction.
-- Develop **real-time dashboards** for transport authorities.
+## 1. Docker Multi-node Cluster
 
----
+Containers:
 
-## 🏆 Acknowledgments
+* 1 Master node (NameNode, ResourceManager, Hive, Spark Driver)
+* 2 Slave nodes (DataNode, NodeManager)
 
-This project was conducted under the **Samsung Innovation Campus (Big Data Program)**.  
-We sincerely thank our instructors and reviewers for guidance and feedback.
+Cluster configured manually using internal Docker networking and `/etc/hosts`.
 
 ---
 
-© 2025 Samsung Innovation Campus - Team SIC_2025
+## 2. HDFS & YARN Initialization
 
+Format HDFS:
+
+```bash
+hdfs namenode -format
+```
+
+Start services:
+
+```bash
+start-dfs.sh
+start-yarn.sh
+```
+
+Verify:
+
+```bash
+jps
+hdfs dfsadmin -report
+```
+
+---
+
+# 📥 Data Ingestion
+
+NYC Taxi dataset (Parquet format) uploaded into HDFS:
+
+```bash
+hdfs dfs -mkdir -p /data/parquet
+hdfs dfs -put *.parquet /data/parquet/
+```
+
+Data stored in:
+
+```
+hdfs:///data/parquet/
+```
+
+---
+
+# ⚙️ ETL Pipeline (Batch Processing)
+
+## Step 1 – Read Data from HDFS
+
+```python
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+    .appName("NYC_ETL") \
+    .enableHiveSupport() \
+    .getOrCreate()
+
+df = spark.read.parquet("hdfs:///data/parquet/")
+```
+
+---
+
+## Step 2 – Data Cleaning
+
+* Remove invalid passenger_count
+* Filter abnormal trip_distance
+* Handle missing values
+
+```python
+from pyspark.sql.functions import col
+
+clean_df = df.filter(
+    (col("passenger_count") > 0) &
+    (col("trip_distance") > 0)
+)
+```
+
+---
+
+## Step 3 – Feature Engineering
+
+* Extract pickup hour
+* Aggregate trip counts
+* Prepare dataset for analytics & modeling
+
+```python
+from pyspark.sql.functions import hour
+
+feature_df = clean_df.withColumn(
+    "pickup_hour",
+    hour("tpep_pickup_datetime")
+)
+```
+
+---
+
+# 🗄 Hive Integration
+
+Create external Hive table:
+
+```sql
+CREATE EXTERNAL TABLE taxi_data
+STORED AS PARQUET
+LOCATION 'hdfs:///data/parquet/';
+```
+
+Example analytical query:
+
+```sql
+SELECT pickup_hour, COUNT(*) AS trip_count
+FROM taxi_data
+GROUP BY pickup_hour
+ORDER BY trip_count DESC;
+```
+
+---
+
+# 📊 Exploratory Data Analysis
+
+Key insights:
+
+* Identified peak demand hours (rush hours)
+* Determined high-demand pickup zones
+* Analyzed trip distance distribution
+* Observed passenger count trends
+
+These insights support taxi fleet optimization strategies.
+
+---
+
+# 🤖 Demand Modeling
+
+Objective: Predict taxi demand using time-based features.
+
+Model used:
+
+* Linear Regression (Spark MLlib)
+
+```python
+from pyspark.ml.regression import LinearRegression
+
+lr = LinearRegression(featuresCol="features", labelCol="trip_count")
+model = lr.fit(training_data)
+
+predictions = model.transform(test_data)
+```
+
+Evaluation metrics:
+
+* RMSE
+* R²
+
+Model serves as proof-of-concept demand forecasting.
+
+---
+
+# 🔄 End-to-End Workflow
+
+1. Deploy Hadoop cluster via Docker
+2. Upload Parquet files to HDFS
+3. Run distributed ETL with Spark
+4. Store structured data in Hive
+5. Perform analytical queries
+6. Train baseline demand model
+
+---
+
+# 🎯 What This Project Demonstrates
+
+✔ Distributed infrastructure deployment
+✔ Hadoop ecosystem understanding
+✔ HDFS data management
+✔ Batch ETL pipeline design
+✔ Spark distributed processing
+✔ Hive-based analytics
+✔ Integration of ML with Big Data pipeline
+
+---
+
+# 🚀 Future Improvements
+
+* Convert batch pipeline to streaming (Spark Structured Streaming)
+* Add workflow orchestration (Apache Airflow)
+* Deploy on cloud environment (AWS EMR / GCP Dataproc)
+* Implement CI/CD for data pipeline
+
+---
+
+Nếu bạn copy README này lên GitHub thì:
+
+* Recruiter thấy rõ đây là **team project**
+* Nhưng vẫn thấy rõ **vai trò của bạn**
+* Project nhìn đúng chuẩn Data Engineering
+
+Nếu bạn muốn mình tối ưu thêm để nhìn “giống production repo” hơn (thêm folder structure chuẩn, diagram PNG, badges…), mình làm tiếp cho bạn luôn 🔥
