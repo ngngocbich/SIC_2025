@@ -1,4 +1,4 @@
-# 🚕 NYC Taxi Big Data Platform
+# 🚕 NYC Taxi Big Data Platform 
 
 ### Dockerized Hadoop + Spark ETL & Demand Prediction
 
@@ -32,38 +32,35 @@ The project demonstrates distributed system deployment, batch ETL pipeline desig
 
 ---
 
-# 🏗 System Architecture
+## 🏗 System Architecture
 
-```
-                    Docker Network
-   -------------------------------------------------
-   |                                               |
-   |   ┌─────────────────────────────┐            |
-   |   │         MASTER              │            |
-   |   │-----------------------------│            |
-   |   │  NameNode                   │            |
-   |   │  ResourceManager            │            |
-   |   │  Hive                       │            |
-   |   │  Spark Driver               │            |
-   |   └──────────────┬──────────────┘            |
-   |                  │                           |
-   |   ┌──────────────┴──────────────┐            |
-   |   │          SLAVE01            │            |
-   |   │-----------------------------│            |
-   |   │  DataNode                   │            |
-   |   │  NodeManager                │            |
-   |   └──────────────┬──────────────┘            |
-   |                  │                           |
-   |   ┌──────────────┴──────────────┐            |
-   |   │          SLAVE02            │            |
-   |   │-----------------------------│            |
-   |   │  DataNode                   │            |
-   |   │  NodeManager                │            |
-   |   └─────────────────────────────┘            |
-   -------------------------------------------------
+```mermaid
+flowchart TB
+
+    subgraph Docker_Network
+        MASTER["MASTER NODE
+        - NameNode
+        - ResourceManager
+        - Hive
+        - Spark Driver"]
+
+        SLAVE1["SLAVE01
+        - DataNode
+        - NodeManager"]
+
+        SLAVE2["SLAVE02
+        - DataNode
+        - NodeManager"]
+
+        MASTER --- SLAVE1
+        MASTER --- SLAVE2
+    end
 
 Data Flow:
-Parquet Files → HDFS → PySpark ETL → Hive Tables → Analytics → Modeling
+    Parquet["Parquet Files"] --> HDFS["HDFS (Master)"]
+    HDFS --> Spark["PySpark ETL"]
+    Spark --> Hive["Hive Tables"]
+    Hive --> Analytics["Analytics & Modeling"]
 ```
 
 ---
@@ -275,13 +272,3 @@ Model serves as proof-of-concept demand forecasting.
 * Add workflow orchestration (Apache Airflow)
 * Deploy on cloud environment (AWS EMR / GCP Dataproc)
 * Implement CI/CD for data pipeline
-
----
-
-Nếu bạn copy README này lên GitHub thì:
-
-* Recruiter thấy rõ đây là **team project**
-* Nhưng vẫn thấy rõ **vai trò của bạn**
-* Project nhìn đúng chuẩn Data Engineering
-
-Nếu bạn muốn mình tối ưu thêm để nhìn “giống production repo” hơn (thêm folder structure chuẩn, diagram PNG, badges…), mình làm tiếp cho bạn luôn 🔥
